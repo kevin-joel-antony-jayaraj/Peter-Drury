@@ -1,0 +1,50 @@
+name: World Cup Bot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: 'requirements.txt'
+
+      - name: Install dependencies
+        working-directory: .
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Create local config files from GitHub Secrets
+        shell: bash
+        env:
+          KEYS_ENV: ${{ secrets.KEYS_ENV }}
+          TOKEN_JSON: ${{ secrets.GOOGLE_TOKEN_JSON }}
+          CLIENT_SECRET_JSON: ${{ secrets.GOOGLE_CLIENT_SECRET_JSON }}
+        run: |
+          if [ -n "$KEYS_ENV" ]; then
+            printf '%s' "$KEYS_ENV" > keys.env
+          fi
+          if [ -n "$TOKEN_JSON" ]; then
+            printf '%s' "$TOKEN_JSON" > token.json
+          fi
+          if [ -n "$CLIENT_SECRET_JSON" ]; then
+            printf '%s' "$CLIENT_SECRET_JSON" > client_secret.json
+          fi
+
+      - name: Run bot
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          GOOGLE_CHAT_SPACE_NAME: ${{ secrets.GOOGLE_CHAT_SPACE_NAME }}
+        run: python bot.py
