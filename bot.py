@@ -14,7 +14,9 @@ load_dotenv(KEYS_FILE)
 
 url = "https://api.football-data.org/v4/competitions/WC/matches"
 match_filters = {"status": "FINISHED"}
-api_key = os.getenv("API_KEY")
+api_key = os.getenv("API_KEY", "").strip()
+if not api_key:
+    raise RuntimeError("API_KEY secret is missing or empty")
 headers = {"X-Auth-Token": api_key}
 
 
