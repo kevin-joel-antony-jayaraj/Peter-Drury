@@ -44,11 +44,7 @@ jobs:
           fi
 
       - name: Run bot
-        working-directory: ${{ github.workspace }}
         env:
           API_KEY: ${{ secrets.API_KEY }}
           GOOGLE_CHAT_SPACE_NAME: ${{ secrets.GOOGLE_CHAT_SPACE_NAME }}
-        run: |
-          pwd
-          ls -la
-          python "$GITHUB_WORKSPACE/bot.py"
+        run: python bot.py
