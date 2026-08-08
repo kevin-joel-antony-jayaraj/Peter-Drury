@@ -34,7 +34,12 @@ def get_message() -> str:
 
 def main() -> None:
     response = requests.get(url, params=match_filters, headers=headers)
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as e:
+        print(f"API request failed: {e}")
+        print(f"Response body: {response.text}")
+        return
     data = response.json()
 
     with MATCHES_FILE.open("r", encoding="utf-8") as f:
