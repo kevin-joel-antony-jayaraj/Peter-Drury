@@ -12,7 +12,7 @@ KEYS_FILE = BASE_DIR / "keys.env"
 
 load_dotenv(KEYS_FILE)
 
-url = "https://api.football-data.org/v4/competitions/WC/matches"
+url = "https://api.football-data.org/v4/competitions/PL/matches"
 match_filters = {"status": "FINISHED"}
 api_key = os.getenv("API_KEY", "").strip()
 if not api_key:
@@ -40,6 +40,10 @@ def main() -> None:
     with MATCHES_FILE.open("r", encoding="utf-8") as f:
         existing_matches = json.load(f)
 
+    if not data.get("matches"):
+        print("No matches found")
+        return
+    
     latest_match = data.get("matches", [{}])[-1]
     print("Latest match from API:")
     
@@ -58,3 +62,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
