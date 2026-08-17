@@ -226,3 +226,10 @@ __marimo__/
 .env
 .env.local
 keys.env
+
+
+#pycache
+
+__pycache__/
+*.pyc
+
